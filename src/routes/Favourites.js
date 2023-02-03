@@ -1,20 +1,25 @@
 import { PokemonCard } from '../components/PokemonCard'; 
 import { FormControl, Container, Row } from 'react-bootstrap';
 import InputGroup from "react-bootstrap/InputGroup"
-import React, {useEffect, useState, useContext} from 'react';
-import {FavouritesContext} from '../routes/FavouritesProvider';
+import React, {useEffect, useState} from 'react';
+import { useContext } from 'react';
+import { FavouritesContext } from '../routes/FavouritesProvider';
 
-export default function Home({pokemonList}){
+export function Favourites ({pokemonList}){
+  
     const [pokemonListFiltered, setPokemonListFiltered] = useState([])
+    const {favourites} = useContext(FavouritesContext)
+    const [favouritedPokemon,setFavouritedPokemon] = useState(pokemonList.filter((pokemon) => {
+      return favourites.includes(pokemon.name)}))
     
     useEffect(()=>{
-      setPokemonListFiltered(pokemonList)
-    },[pokemonList])
+      setPokemonListFiltered(favouritedPokemon)
+    },[favouritedPokemon])
     
     function filterPokemon(e){
         const value = e.target.value
         const regex = new RegExp(value, "gi")
-        const filtered = pokemonList.filter(pokemon => {
+        const filtered = favourites.filter(pokemon => {
           return pokemon.name.match(regex)})
         setPokemonListFiltered(filtered)
       }
@@ -27,9 +32,9 @@ export default function Home({pokemonList}){
         <Container style={{display:"flex", justifyContent:"space-between",  width:"80%"}}>
         <Row>
         {pokemonListFiltered.map(pokemon => {
-        return   <PokemonCard key={pokemon.name} url={pokemon.url} name={pokemon.name} />
-}
-)}
+          return   <PokemonCard key={pokemon.name} url={pokemon.url} name={pokemon.name} />
+          }
+        )}
         </Row>
         </Container>
         </>
